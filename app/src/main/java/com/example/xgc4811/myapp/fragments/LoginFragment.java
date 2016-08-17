@@ -96,7 +96,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         public void onCancel() {
 
         }
-
         @Override
         public void onError(FacebookException error) {
         }
@@ -134,11 +133,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 }
             }
         };
-
-        // Making the device discoverable
-        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-        enableBtIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);
-        startActivityForResult(enableBtIntent, 0);
     }
 
     @Override
@@ -338,7 +332,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     Log.i( TAG, "handleMessage: Clear" );
                     break;
                 case STATE_LOGGING_IN:
-                    loginRequest( (String) msg.obj );
+                    if (turnBluetooth( true ) == true) {
+                        loginRequest( (String) msg.obj );
+                    }
                     Log.i( TAG, "handleMessage: Login in to server" );
                     break;
                 case STATE_ACQUIRE_DATA:
@@ -349,6 +345,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     break;
                 case STATE_SEND_BLUETOOTH:
                     bluetoothUserRequest();
+                    // Making the device discoverable
+                    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+                    enableBtIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);
+                    startActivityForResult(enableBtIntent, 0);
                     Log.i( TAG, "handleMessage: Sending Bluetooth Mac Address");
                     break;
                 case STATE_START_SERVICE:
@@ -359,6 +359,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     logoutRequest();
                     clearAll();
                     bluetoothService(false);
+                    // turn bluetooth off
+                    turnBluetooth(false);
                     Log.i( TAG, "handleMessage: Logout from server " );
                     break;
             }
@@ -379,6 +381,25 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         }else if (!bluetoothStatus){
             alarm.cancel( pintent );
             getContext().stopService( new Intent( getContext(), BluetoothService.class ) );
+        }
+    }
+
+    private boolean turnBluetooth (boolean bluetooth){
+        if (bluetooth == true) {
+            // turn bluetooth off
+            BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (mBluetoothAdapter.isEnabled()) {
+            }else{
+                mBluetoothAdapter.enable();
+            }
+            return true;
+        } else {
+            // turn bluetooth off
+            BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (mBluetoothAdapter.isEnabled()) {
+                mBluetoothAdapter.disable();
+            }
+            return false;
         }
     }
 

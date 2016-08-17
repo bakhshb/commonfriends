@@ -10,6 +10,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.Volley;
 
 /**
  * Created by bakhs on 3/07/2016.
@@ -34,11 +35,7 @@ public class CustomRequestQueue {
 
     public RequestQueue getRequestQueue() {
         if (mRequestQueue == null){
-            Cache cache = new DiskBasedCache(mCtx.getApplicationContext().getCacheDir(), 1024 * 1024);
-            Network network = new BasicNetwork(new HurlStack());
-            mRequestQueue = new RequestQueue(cache, network);
-            // Don't forget to start the volley request queue
-            mRequestQueue.start();
+            mRequestQueue = Volley.newRequestQueue(mCtx);
         }
         return mRequestQueue;
     }
