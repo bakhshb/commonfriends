@@ -68,9 +68,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     static int mState;
 
     // API
-    private static final String LOGIN_URL = "https://commonfriends.herokuapp.com/api/login/facebook/";
-    private static final String LOGOUT_URL = "https://commonfriends.herokuapp.com/api/logout/facebook/";
-    private static final String BLUETOOTH_USER_URL = "https://commonfriends.herokuapp.com/api/bluetooth/user/";
+    private static final String LOGIN_URL = "http://bakhshb.pythonanywhere.com/api/login/facebook/";
+    private static final String LOGOUT_URL = "http://bakhshb.pythonanywhere.com/api/logout/facebook/";
+    private static final String BLUETOOTH_USER_URL = "http://bakhshb.pythonanywhere.com/api/bluetooth/user/";
     private AppHelper mAppHelper;
     //Fragment
     UserAccountFragment userAccountFragment = null;
@@ -376,7 +376,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         AlarmManager alarm = (AlarmManager) getContext().getSystemService( Context.ALARM_SERVICE );
         if (bluetoothStatus) {
             //for 30 mint 60*60*1000
-            alarm.setRepeating( AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 30 * 1000, pintent );
+            alarm.setRepeating( AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 120 * 1000, pintent );
            // bluetoothUserRequest();
         }else if (!bluetoothStatus){
             alarm.cancel( pintent );

@@ -34,8 +34,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * Created by bakhs on 20/07/2016.
@@ -43,7 +45,7 @@ import java.util.Random;
 public class BluetoothService extends Service {
 
     private static final String TAG = "BluetoothService";
-    private static final String BLUETOOTH_SEARCH_URL = "https://commonfriends.herokuapp.com/api/bluetooth/search/";
+    private static final String BLUETOOTH_SEARCH_URL = "http://bakhshb.pythonanywhere.com/api/bluetooth/search/";
     // Handler
     private static final int SEND_REQUEST = 1;
     private static final int SEND_RESULS_ALREADY_FRIEND = 2;
@@ -58,6 +60,8 @@ public class BluetoothService extends Service {
     private IntentFilter mIntentFilter;
     private AppHelper mAppHelper;
 
+    private Set<String> devicesNotFound ;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -69,6 +73,7 @@ public class BluetoothService extends Service {
         super.onCreate();
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mAppHelper = new AppHelper( getApplicationContext() );
+        devicesNotFound = new HashSet<String>(  );
     }
 
     @Override
@@ -101,15 +106,18 @@ public class BluetoothService extends Service {
             if (BluetoothDevice.ACTION_FOUND.equals( action )){
                 device= intent.getParcelableExtra( BluetoothDevice.EXTRA_DEVICE );
                 int  rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
-                Log.i( TAG, "onReceive:  RSSI: " + rssi + "dBm " + device.getAddress() + " " +device.getName() );
+                // Devices not paired
                 if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
-                    Log.i( TAG, "onReceive:  RSSI: " + rssi + "dBm " + device.getAddress() + " " +device.getName());
-                    Message mMessage = mHandler.obtainMessage(SEND_REQUEST);
-                    Bundle mBundle = new Bundle(  );
-                    mBundle.putString( "bluetooth_address", device.getAddress() );
-                    mBundle.putInt( "rssi", rssi );
-                    mMessage.setData( mBundle );
-                    mHandler.sendMessage( mMessage );
+                    // Devices found in the server
+                    if (!devicesNotFound.contains( device.getAddress())) {
+                        Log.i( TAG, "onReceive:  RSSI: " + rssi + "dBm " + device.getAddress() + " " + device.getName() );
+                        Message mMessage = mHandler.obtainMessage( SEND_REQUEST );
+                        Bundle mBundle = new Bundle();
+                        mBundle.putString( "bluetooth_address", device.getAddress() );
+                        mBundle.putInt( "rssi", rssi );
+                        mMessage.setData( mBundle );
+                        mHandler.sendMessage( mMessage );
+                    }
                 }
             }
         }
@@ -163,7 +171,7 @@ public class BluetoothService extends Service {
         return "more than 5 Meters";
     }
 
-    private void bluetoothSearchRequest(String bluetooth_address, final int rssi){
+    private void bluetoothSearchRequest(final String bluetooth_address, final int rssi){
         HashMap<String, String > user = mAppHelper.getUserDetails();
         final String token = user.get( AppHelper.USER_TOKEN );
         final String currentDevice = user.get( AppHelper.BLUETOOTH_ADDRESS );
@@ -206,6 +214,8 @@ public class BluetoothService extends Service {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                devicesNotFound.add( bluetooth_address );
+                Log.d( TAG, "onErrorResponse: " +  bluetooth_address);
             }
         } ){
             @Override

@@ -1,8 +1,6 @@
 package com.example.xgc4811.myapp.activities;
 
 import android.Manifest;
-import android.bluetooth.BluetoothAdapter;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -11,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.example.xgc4811.myapp.helper.AppHelper;
 import com.example.xgc4811.myapp.fragments.LoginFragment;
 import com.example.xgc4811.myapp.R;
 
@@ -21,13 +18,10 @@ public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 1;
     private static final String TAG = "MainActivity";
 
-    private AppHelper mAppHelper;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView( R.layout.activity_main);
-        mAppHelper = new AppHelper( getApplicationContext() );
         if(savedInstanceState == null){
             LoginFragment fb_login = new LoginFragment();
             getSupportFragmentManager().beginTransaction().add(R.id.container_layout,fb_login,"FB").commit();
