@@ -20,7 +20,7 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"/>
 
-        <activity android:name=".activities.MainActivity">
+        <activity android:name=".activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -46,6 +46,8 @@
         </service>
 
         <activity android:name=".activities.BluetoothResultsActivity">
+        </activity>
+        <activity android:name=".activities.MainActivity">
         </activity>
     </application>
 

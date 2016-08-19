@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.xgc4811.myapp.fragments.LoginFragment;
 import com.example.xgc4811.myapp.R;
+import com.example.xgc4811.myapp.fragments.MainFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,8 +24,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView( R.layout.activity_main);
         if(savedInstanceState == null){
-            LoginFragment fb_login = new LoginFragment();
-            getSupportFragmentManager().beginTransaction().add(R.id.container_layout,fb_login,"FB").commit();
+//            LoginFragment fb_login = new LoginFragment();
+            MainFragment mainFragment = new MainFragment();
+            getSupportFragmentManager().beginTransaction().add(R.id.container_layout,mainFragment,"FB").commit();
         }
 
         // Check Location
