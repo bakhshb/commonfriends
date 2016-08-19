@@ -19,9 +19,10 @@ public class BluetoothResultsActivity extends AppCompatActivity {
         setContentView( R.layout.activity_bluetooth_results );
         this.setTitle( "Bluetooth Result" );
         Bundle mBundle = getIntent().getExtras();
+        mTextView = (TextView) findViewById( R.id.bluetoothResults );
+        mTextView.setText( "" );
         if (mBundle != null){
             Log.d( TAG, "" + mBundle.get( "msg" )  );
-            mTextView = (TextView) findViewById( R.id.bluetoothResults );
             mTextView.setText( mBundle.getString( "msg" ) );
         }
     }

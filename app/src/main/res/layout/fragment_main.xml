@@ -1,0 +1,80 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".fragments.MainFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:id="@+id/user_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="30dp"
+        android:textSize="30dp"
+        android:textAlignment="center"/>
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/relativeLayout">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Common Friends"
+            android:id="@+id/button_commonfriends"
+            android:textAllCaps="false"
+            android:width="180dp"
+            android:minHeight="20dp"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Account"
+            android:id="@+id/button_account1"
+            android:textAllCaps="false"
+            android:width="180dp"
+            android:minHeight="20dp"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@+id/button_commonfriends"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Turn Discovery On/Off"
+            android:id="@+id/button_turndiscovery"
+            android:textAllCaps="false"
+            android:width="180dp"
+            android:minHeight="20dp"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@id/button_account1"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            android:id="@+id/button_logout"
+            android:textAllCaps="false"
+            android:width="180dp"
+            android:minHeight="20dp"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@id/button_turndiscovery"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>
