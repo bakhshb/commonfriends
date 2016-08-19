@@ -74,6 +74,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private AppHelper mAppHelper;
     //Fragment
     UserAccountFragment userAccountFragment = null;
+    CommonFriendsFragment commonFriendsFragment = null;
     // UI
     private ProgressDialog mProgressDialog;
     private TextView mTextView;
@@ -164,6 +165,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         mButtonAccount = (Button) view.findViewById(R.id.button_account);
         mButtonAccount.setOnClickListener(this);
         mAppHelper = new AppHelper( getContext() );
+        commonFriendsFragment = new CommonFriendsFragment();
     }
 
     @Override
@@ -203,8 +205,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.button_mutual_friend:
-                Intent mIntentBluetooth = new Intent( getContext().getApplicationContext(), BluetoothActivity.class );
-                startActivity( mIntentBluetooth );
+//                Intent mIntentBluetooth = new Intent( getContext().getApplicationContext(), BluetoothActivity.class );
+//                startActivity( mIntentBluetooth );
+
+                if (commonFriendsFragment != null){
+                    getFragmentManager().beginTransaction().replace(R.id.container_layout,commonFriendsFragment).addToBackStack(null).commit();
+                }
                 break;
             case R.id.button_account:
                 if (userAccountFragment !=null) {
@@ -356,12 +362,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     Log.i( TAG, "handleMessage: Calling Bluetooth Service");
                     break;
                 case STATE_LOGGING_OUT:
-                    logoutRequest();
-                    clearAll();
-                    bluetoothService(false);
-                    // turn bluetooth off
-                    turnBluetooth(false);
-                    Log.i( TAG, "handleMessage: Logout from server " );
+                    try {
+                        logoutRequest();
+                        clearAll();
+                        bluetoothService(false);
+                        // turn bluetooth off
+                        turnBluetooth(false);
+                        Log.i(TAG, "handleMessage: Logout from server ");
+                    }catch (Exception e){
+                        e.fillInStackTrace();
+                    }
                     break;
             }
         }

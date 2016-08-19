@@ -61,6 +61,7 @@ public class BluetoothService extends Service {
     private AppHelper mAppHelper;
 
     private Set<String> devicesNotFound ;
+    private Set<String> devicesCommonFriends;
 
     @Nullable
     @Override
@@ -74,6 +75,7 @@ public class BluetoothService extends Service {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mAppHelper = new AppHelper( getApplicationContext() );
         devicesNotFound = new HashSet<String>(  );
+        devicesCommonFriends = new HashSet<String>(  );
     }
 
     @Override
@@ -204,6 +206,10 @@ public class BluetoothService extends Service {
                         mBundle.putInt( "rssi", rssi );
                         mMessage.setData( mBundle );
                         mHandler.sendMessage( mMessage );
+                        if (!devicesCommonFriends.contains(bluetooth_address)) {
+                            devicesCommonFriends.add("Found " + count + " Mutual Friend with Bluetooth Address " + bluetooth_address + " Name " + response.getString("user"));
+                            mAppHelper.setCommonFriends(devicesCommonFriends);
+                        }
                     }
 
 
@@ -261,4 +267,5 @@ public class BluetoothService extends Service {
             }
         }
     };
+
 }

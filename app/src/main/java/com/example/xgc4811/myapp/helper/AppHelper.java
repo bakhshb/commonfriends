@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Created by bakhs on 23/07/2016.
@@ -32,6 +33,8 @@ public class AppHelper {
     public static final String USER_TOKEN = "token";
 
     public static final String BLUETOOTH_ADDRESS = "BluetoothAddress";
+
+    public static final String COMMON_FRIENDS = "CommonFriends";
 
     public AppHelper(Context context){
         this.mContext = context;
@@ -88,5 +91,19 @@ public class AppHelper {
     public void setDeviceAddress (String bluetoothAddress){
         editor.putString( BLUETOOTH_ADDRESS,  bluetoothAddress);
         editor.commit();
+    }
+
+    public void setCommonFriends(Set<String> commonFriends){
+        editor.putStringSet(COMMON_FRIENDS, commonFriends);
+        editor.commit();
+    }
+
+    public HashMap<String, Set<String>> getCommonFriends (){
+        HashMap<String, Set<String>> user = new HashMap<String, Set<String>>();
+        user.put(COMMON_FRIENDS, pref.getStringSet(COMMON_FRIENDS, null));
+
+
+        return user;
+
     }
 }

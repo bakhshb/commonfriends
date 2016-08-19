@@ -10,7 +10,7 @@ android {
     }
     defaultConfig {
         applicationId "com.example.xgc4811.myapp"
-        minSdkVersion 23
+        minSdkVersion 21
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -30,4 +30,5 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.+'
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.android.support:design:23.4.0'
+    compile 'com.android.support:support-v4:23.4.0'
 }
