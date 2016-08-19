@@ -76,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView( R.layout.activity_login );
+        this.setTitle( "Common Friends Login" );
 
         init(  );
 

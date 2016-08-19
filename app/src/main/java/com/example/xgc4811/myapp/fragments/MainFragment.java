@@ -246,6 +246,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         super.onResume();
         Profile profile = Profile.getCurrentProfile();
         if (profile != null) {
+            getActivity().setTitle( "Home" );
             userAccountFragment = UserAccountFragment.newInstance( profile );
             mTextView.setText( "Welcome " + profile.getFirstName() +" "+ profile.getLastName() );
         }
