@@ -26,7 +26,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.xgc4811.myapp.helper.CustomRequestQueue;
 import com.example.xgc4811.myapp.R;
-import com.example.xgc4811.myapp.activities.BluetoothResultsActivity;
+import com.example.xgc4811.myapp.activities.ResultsActivity;
 import com.example.xgc4811.myapp.helper.AppHelper;
 
 import org.json.JSONArray;
@@ -128,7 +128,7 @@ public class BluetoothService extends Service {
 
     private void sendNotification(String msg) {
         NotificationManager mNotificationManager = mNotificationManager();
-        Intent mIntent = new Intent( this.getApplicationContext(), BluetoothResultsActivity.class );
+        Intent mIntent = new Intent( this.getApplicationContext(), ResultsActivity.class );
         Bundle mBundle = new Bundle(  );
         mBundle.putString( "msg", msg );
         mIntent.putExtras( mBundle );

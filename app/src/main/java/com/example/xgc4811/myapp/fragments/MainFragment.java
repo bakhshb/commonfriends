@@ -2,6 +2,7 @@ package com.example.xgc4811.myapp.fragments;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
@@ -44,6 +45,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private static final String BLUETOOTH_USER_URL = "http://bakhshb.pythonanywhere.com/api/bluetooth/user/";
     private AppHelper mAppHelper;
     //Fragment
+    CommonFriendsFragment commonFriendsFragment = null;
     UserAccountFragment userAccountFragment = null;
 
     private TextView mTextView;
@@ -51,6 +53,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private Button mButtonCommonFriends;
     private Button mButtonAccount;
     private Button mButtonLogout;
+
+    private ProgressDialog mProgressDialog;
 
     public MainFragment() {
     }
@@ -81,6 +85,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             BluetoothAdapter bAdapter = BluetoothAdapter.getDefaultAdapter();
             if(bAdapter.getScanMode() == BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
                 // device is discoverable & connectable
+                bluetoothService( true );
             } else {
                 // device is not discoverable & connectable
                 // Making the device discoverable
@@ -88,7 +93,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 enableBtIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);
                 startActivityForResult(enableBtIntent, 0);
                 bluetoothUserRequest();
-                bluetoothService( true );
             }
         }
 
@@ -96,6 +100,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     public void init (View view){
         mAppHelper = new AppHelper( getContext() );
+
+        commonFriendsFragment = new CommonFriendsFragment();
 
         mTextView = (TextView) view.findViewById(R.id.user_detail);
         mButtonTurnDiscovery = (Button) view.findViewById(R.id.button_turndiscovery);
@@ -106,6 +112,10 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         mButtonAccount.setOnClickListener(this);
         mButtonLogout = (Button) view.findViewById(R.id.button_logout);
         mButtonLogout.setOnClickListener( this );
+
+        mProgressDialog = new ProgressDialog (getActivity()); //display an invisible overlay dialog to prevent user interaction and pressing back
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setProgressStyle( mProgressDialog.STYLE_SPINNER );
     }
 
     @Override
@@ -128,6 +138,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.button_commonfriends:
+                if (commonFriendsFragment != null){
+                    getFragmentManager().beginTransaction().replace(R.id.container_layout,commonFriendsFragment).addToBackStack(null).commit();
+                }
 
                 break;
             case R.id.button_account1:
@@ -196,11 +209,14 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     private void logoutRequest(){
+        mProgressDialog.setMessage("Please wait while Logging out ...");
+        showDialog();
         HashMap<String, String > user = mAppHelper.getUserDetails();
         final String token = user.get( AppHelper.USER_TOKEN );
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest( Request.Method.POST, LOGOUT_URL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                hideDialog();
                 mAppHelper.logoutUser();
                 Intent mIntentMainAcivity = new Intent( getContext(), LoginActivity.class );
                 startActivity( mIntentMainAcivity );
@@ -209,6 +225,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                hideDialog();
             }
         } ){
             @Override
@@ -250,6 +267,15 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             userAccountFragment = UserAccountFragment.newInstance( profile );
             mTextView.setText( "Welcome " + profile.getFirstName() +" "+ profile.getLastName() );
         }
+    }
 
+    private void showDialog() {
+        if (!mProgressDialog.isShowing())
+            mProgressDialog.show();
+    }
+
+    private void hideDialog() {
+        if (mProgressDialog.isShowing())
+            mProgressDialog.dismiss();
     }
 }

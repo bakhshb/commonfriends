@@ -27,6 +27,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <activity android:name=".activities.BluetoothActivity">
         </activity>
 
@@ -45,10 +46,12 @@
         <service android:name=".services.BluetoothService">
         </service>
 
-        <activity android:name=".activities.BluetoothResultsActivity">
+        <activity android:name=".activities.ResultsActivity">
         </activity>
+
         <activity android:name=".activities.MainActivity">
         </activity>
+
     </application>
 
 </manifest>

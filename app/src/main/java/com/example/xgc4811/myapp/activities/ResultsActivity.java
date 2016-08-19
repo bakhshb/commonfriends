@@ -7,9 +7,9 @@ import android.widget.TextView;
 
 import com.example.xgc4811.myapp.R;
 
-public class BluetoothResultsActivity extends AppCompatActivity {
+public class ResultsActivity extends AppCompatActivity {
 
-    private static final String TAG = "BluetoothResults";
+    private static final String TAG = "ResultsAcitivty";
 
     private TextView mTextView;
 

@@ -147,7 +147,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void loginRequest (String facebookToken){
-        mProgressDialog.setMessage("Login ...");
+        mProgressDialog.setMessage("Please wait while Logging in ...");
         showDialog();
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("access_token", facebookToken);

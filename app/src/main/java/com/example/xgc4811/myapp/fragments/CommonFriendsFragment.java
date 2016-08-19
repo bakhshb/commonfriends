@@ -27,12 +27,12 @@ public class CommonFriendsFragment extends ListFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_common_friends, container, false);
-
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getActivity().setTitle( "Common Friends List" );
         mListView = (ListView) view.findViewById( android.R.id.list );
         listAdapter = new ArrayAdapter<String>( getActivity(), android.R.layout.simple_list_item_1,0 );
         mListView.setAdapter(listAdapter);
