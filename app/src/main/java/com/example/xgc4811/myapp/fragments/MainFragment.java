@@ -86,6 +86,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             if(bAdapter.getScanMode() == BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
                 // device is discoverable & connectable
                 bluetoothService( true );
+                bluetoothUserRequest();
             } else {
                 // device is not discoverable & connectable
                 bluetoothUserRequest();
@@ -134,7 +135,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
                     enableBtIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);
                     startActivityForResult(enableBtIntent, 0);
-
+                    bluetoothUserRequest();
                     bluetoothService( true );
                 }
                 break;

@@ -91,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
     public void init (){
 
         LoginButton loginButton = (LoginButton) findViewById(R.id.facebook_login_button);
-        loginButton.setReadPermissions( Arrays.asList("public_profile"));
+        loginButton.setReadPermissions( Arrays.asList("public_profile","email", "user_friends"));
         loginButton.registerCallback(callbackManager, facebookCallBack);
         mTextView = (TextView) findViewById(R.id.user_detail);
         mTextView.setText( "Please Login With Facebook" );

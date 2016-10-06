@@ -60,7 +60,6 @@ public class BluetoothService extends Service {
     private IntentFilter mIntentFilter;
     private AppHelper mAppHelper;
 
-    private Set<String> devicesNotFound ;
     private Set<String> devicesCommonFriends;
 
     @Nullable
@@ -74,7 +73,6 @@ public class BluetoothService extends Service {
         super.onCreate();
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mAppHelper = new AppHelper( getApplicationContext() );
-        devicesNotFound = new HashSet<String>(  );
         devicesCommonFriends = new HashSet<String>(  );
     }
 
@@ -111,15 +109,14 @@ public class BluetoothService extends Service {
                 // Devices not paired
                 if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
                     // Devices found in the server
-                    if (!devicesNotFound.contains( device.getAddress())) {
-                        Log.i( TAG, "onReceive:  RSSI: " + rssi + "dBm " + device.getAddress() + " " + device.getName() );
-                        Message mMessage = mHandler.obtainMessage( SEND_REQUEST );
-                        Bundle mBundle = new Bundle();
-                        mBundle.putString( "bluetooth_address", device.getAddress() );
-                        mBundle.putInt( "rssi", rssi );
-                        mMessage.setData( mBundle );
-                        mHandler.sendMessage( mMessage );
-                    }
+                    Log.i( TAG, "onReceive:  RSSI: " + rssi + "dBm " + device.getAddress() + " " + device.getName() );
+                    Message mMessage = mHandler.obtainMessage( SEND_REQUEST );
+                    Bundle mBundle = new Bundle();
+                    mBundle.putString( "bluetooth_address", device.getAddress() );
+                    mBundle.putInt( "rssi", rssi );
+                    mMessage.setData( mBundle );
+                    mHandler.sendMessage( mMessage );
+
                 }
             }
         }
@@ -220,7 +217,6 @@ public class BluetoothService extends Service {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                devicesNotFound.add( bluetooth_address );
                 Log.d( TAG, "onErrorResponse: " +  bluetooth_address);
             }
         } ){
