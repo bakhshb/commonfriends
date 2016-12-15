@@ -48,13 +48,15 @@ public class BluetoothService extends Service {
     private static final String BLUETOOTH_SEARCH_URL = "http://bakhshb.pythonanywhere.com/api/bluetooth/search/";
     // Handler
     private static final int SEND_REQUEST = 1;
-    private static final int SEND_RESULS_ALREADY_FRIEND = 2;
-    private static final int SEND_RESULS_MUTUAL_FRIEND = 3;
+    private static final int SEND_RESULTS_ALREADY_FRIEND = 2;
+    private static final int SEND_RESULTS_MUTUAL_FRIEND = 3;
+    private static final int SEND_RESULTS_SUGGEST_FRIEND=4;
 
     //Response friend status
     private static final int NO_MATCH = 0;
     private static final int ALREADY_FRIEND = 1;
     private static final int FOUND_MUTUAL = 2;
+    private static final int SUGGEST_FRIEND=3;
 
     private BluetoothAdapter mBluetoothAdapter;
     private IntentFilter mIntentFilter;
@@ -184,7 +186,7 @@ public class BluetoothService extends Service {
                     int count = 0;
                     Log.d( TAG, "onResponse: " + response.getString( "status" ) +" " + response.getInt( "friend_status") );
                     if (response.getInt( "friend_status" ) == ALREADY_FRIEND){
-                        Message mMessage = mHandler.obtainMessage(SEND_RESULS_ALREADY_FRIEND);
+                        Message mMessage = mHandler.obtainMessage(SEND_RESULTS_ALREADY_FRIEND);
                         Bundle mBundle = new Bundle(  );
                         mBundle.putString( "user", response.getString( "user" ) );
                         mBundle.putInt( "rssi", rssi );
@@ -196,7 +198,7 @@ public class BluetoothService extends Service {
                             count++;
                         }
 
-                        Message mMessage = mHandler.obtainMessage(SEND_RESULS_MUTUAL_FRIEND);
+                        Message mMessage = mHandler.obtainMessage(SEND_RESULTS_MUTUAL_FRIEND);
                         Bundle mBundle = new Bundle(  );
                         mBundle.putString( "user", response.getString( "user" ) );
                         mBundle.putInt( "count", count );
@@ -207,6 +209,13 @@ public class BluetoothService extends Service {
                             devicesCommonFriends.add("Found " + count + " Mutual Friend with Bluetooth Address " + bluetooth_address + " Name " + response.getString("user"));
                             mAppHelper.setCommonFriends(devicesCommonFriends);
                         }
+                    } else if (response.getInt( "friend_status" ) == SUGGEST_FRIEND){
+                        Message mMessage = mHandler.obtainMessage(SEND_RESULTS_SUGGEST_FRIEND);
+                        Bundle mBundle = new Bundle(  );
+                        mBundle.putString( "user", response.getString( "user" ) );
+                        mBundle.putInt( "rssi", rssi );
+                        mMessage.setData( mBundle );
+                        mHandler.sendMessage( mMessage );
                     }
 
 
@@ -241,14 +250,14 @@ public class BluetoothService extends Service {
                 case SEND_REQUEST:
                     bluetoothSearchRequest( msg.getData().getString( "bluetooth_address" ), msg.getData().getInt( "rssi" ) );
                     break;
-                case SEND_RESULS_ALREADY_FRIEND:
+                case SEND_RESULTS_ALREADY_FRIEND:
                     user = msg.getData().getString( "user" );
                     rssi = msg.getData().getInt( "rssi" );
                     Log.d( TAG, "handleMessage: " + rssi );
                     Log.d( TAG, "handleMessage: " + user );
                     sendNotification( "Your Friend "+ user + "\n Proximate Distance: " + calculateDistance( rssi ) );
                     break;
-                case SEND_RESULS_MUTUAL_FRIEND:
+                case SEND_RESULTS_MUTUAL_FRIEND:
                     user = msg.getData().getString( "user" );
                     int count = msg.getData().getInt( "count" );
                     rssi = msg.getData().getInt( "rssi" );
@@ -259,6 +268,13 @@ public class BluetoothService extends Service {
                     }else{
                         sendNotification( "You have  " + count + " mutual friends with " + user + "\n Proximate Distance: " + calculateDistance( rssi ) );
                     }
+                    break;
+                case SEND_RESULTS_SUGGEST_FRIEND:
+                    user = msg.getData().getString( "user" );
+                    rssi = msg.getData().getInt( "rssi" );
+                    Log.d( TAG, "handleMessage: " + rssi );
+                    Log.d( TAG, "handleMessage: " + user );
+                    sendNotification( "Friend Suggestion "+ user + "\n Proximate Distance: " + calculateDistance( rssi ) );
                     break;
             }
         }
