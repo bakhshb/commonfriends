@@ -38,6 +38,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by bakhs on 20/07/2016.
@@ -64,6 +66,8 @@ public class BluetoothService extends Service {
 
     private Set<String> devicesCommonFriends;
 
+    private Set<String> foundDevices;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -76,6 +80,16 @@ public class BluetoothService extends Service {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mAppHelper = new AppHelper( getApplicationContext() );
         devicesCommonFriends = new HashSet<String>(  );
+        foundDevices = new HashSet<String>(  );
+
+        //Send Notification every 15 min when device is found, otherwise keeps search every 3 mins
+        Timer t = new Timer();
+        t.schedule( new TimerTask() {
+            @Override
+            public void run() {
+                foundDevices.clear();
+            }
+        },0,900000 );
     }
 
     @Override
@@ -111,13 +125,15 @@ public class BluetoothService extends Service {
                 // Devices not paired
                 if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
                     // Devices found in the server
-                    Log.i( TAG, "onReceive:  RSSI: " + rssi + "dBm " + device.getAddress() + " " + device.getName() );
-                    Message mMessage = mHandler.obtainMessage( SEND_REQUEST );
-                    Bundle mBundle = new Bundle();
-                    mBundle.putString( "bluetooth_address", device.getAddress() );
-                    mBundle.putInt( "rssi", rssi );
-                    mMessage.setData( mBundle );
-                    mHandler.sendMessage( mMessage );
+                    if (!foundDevices.contains( device.getAddress() )) {
+                        Log.i( TAG, "onReceive:  RSSI: " + rssi + "dBm " + device.getAddress() + " " + device.getName() );
+                        Message mMessage = mHandler.obtainMessage( SEND_REQUEST );
+                        Bundle mBundle = new Bundle();
+                        mBundle.putString( "bluetooth_address", device.getAddress() );
+                        mBundle.putInt( "rssi", rssi );
+                        mMessage.setData( mBundle );
+                        mHandler.sendMessage( mMessage );
+                    }
 
                 }
             }
@@ -183,6 +199,7 @@ public class BluetoothService extends Service {
             @Override
             public void onResponse(JSONObject response) {
                 try {
+                    foundDevices.add( bluetooth_address );
                     int count = 0;
                     Log.d( TAG, "onResponse: " + response.getString( "status" ) +" " + response.getInt( "friend_status") );
                     if (response.getInt( "friend_status" ) == ALREADY_FRIEND){
